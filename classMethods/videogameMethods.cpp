@@ -7,11 +7,11 @@ Videogame::Videogame(std::string name, int id) : Entry(name, id){
     std::getline(std::cin, genre);
                 
     std::cout << "Videogame's studio:";
-	std::getline(std::cin, studio);
+    std::getline(std::cin, studio);
 
     timePlayed = 0;
 
-	maxAchievements = rand()%20;
+    maxAchievements = rand()%20;
 };
 
 std::string Videogame::getGenre(){ return genre; }
