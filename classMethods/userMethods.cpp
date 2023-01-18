@@ -1,19 +1,19 @@
 #include "../header.hpp"
 #include <iostream>
 
-bool User::isDuplicateObject(std::string name, std::map<int, Videogame>* list){
+bool User::isDuplicateObject(std::string name, std::map<int, Videogame*>* list){
     for (auto it = list->begin(); it != list->end(); ++it) {
-        if (it->second.getName() == name)
+        if (it->second->getName() == name)
             return true;
     }
 
     return false;
 }
 
-void User::addVideogame(int id, Videogame videogame){
+void User::addVideogame(int id, Videogame* videogame){
     if (!userVideogames.empty()) {
         std::cout << "List is not empty" << std::endl;
-        if (isDuplicateObject(videogame.getName(), &userVideogames))
+        if (isDuplicateObject(videogame->getName(), &userVideogames))
             std::cout << "Duplicate entry, not allowed!" << std::endl;
         else {
             userVideogames.emplace(id, videogame);
@@ -47,7 +47,7 @@ void User::showUsersLibrary(){
             
     std::cout << "User videogames: " << std::endl;
     for (auto& it : userVideogames) {
-        it.second.print();
+        it.second->print();
     }
 }
 
@@ -62,6 +62,6 @@ void User::getVideogameFromList(int id){
         std::cout << "You cannot deleta a non existent object" << std::endl;
     else {
         std::cout << "This is your object" << std::endl;
-        videogame->second.print();
+        videogame->second->print();
     }
 }

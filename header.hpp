@@ -34,11 +34,11 @@ class Videogame : public Entry{
 
 class User : public Entry{
     private:
-        std::map<int, Videogame> userVideogames;
+        std::map<int, Videogame*> userVideogames;
     public:
         User(std::string name, int id) : Entry(name, id) {};
-        bool isDuplicateObject(std::string name, std::map<int, Videogame>* list);
-        void addVideogame(int id, Videogame videogame);
+        bool isDuplicateObject(std::string name, std::map<int, Videogame*>* list);
+        void addVideogame(int id, Videogame *videogame);
         void deleteVideogame(int id);
         void print();
         void showUsersLibrary();
