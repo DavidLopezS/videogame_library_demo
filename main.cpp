@@ -48,7 +48,7 @@ void deleteObjectFromList(int id, std::map<int, T>* list) {
 		std::cout << "Object deleted correctly!" << std::endl;
 	}
 }
-// THIS IS THE PROBLEM THAT NEEDS TO BE IMPROVED
+
 template <typename T=Entry>
 T* getObjectFromList(int id, std::map<int, T>* list) {
 	if (list->empty()) {
@@ -254,8 +254,8 @@ int userManager(){
 }
 
 void run() {
-    std::unique_ptr<User> user;
-	std::unique_ptr<Videogame> videogame;
+    std::unique_ptr<User*> user;
+	std::unique_ptr<Videogame*> videogame;
 	std::map<int, User> userList;
 	std::map<int, Videogame> videogameList;
 	int id;
@@ -295,8 +295,8 @@ void run() {
 			case 3:
 				std::cout << "Which videogame are you looking for?";
 				std::cin >> id;
-				videogame = std::make_unique<Videogame>(getObjectFromList(id, &videogameList));
-				videogame->print();
+				videogame = std::make_unique<Videogame*>(getObjectFromList(id, &videogameList));
+				(*videogame)->print();
 				break;
 			case 4:
 				getSortedVideogamesFromGenre(&videogameList);
@@ -362,36 +362,36 @@ void run() {
 			case 3:
 				std::cout << "Who are you?";
 				std::cin >> userId;
-				user = std::make_unique<User>(getObjectFromList(userId, &userList));
-				if (user->getName() == "" && user->getId() == 0)
+				user = std::make_unique<User*>(getObjectFromList(userId, &userList));
+				if ((*user)->getName() == "" && (*user)->getId() == 0)
 					break;
 				else {
 					std::cout << "Which videogame do you want?";
 					std::cin >> id;
-					user->addVideogame(id, &videogameList.find(id)->second);
+					(*user)->addVideogame(id, &videogameList.find(id)->second);
 					break;
 				}
 			case 4:
 				std::cout << "Who are you?";
 				std::cin >> userId;
-				user = std::make_unique<User>(getObjectFromList(userId, &userList));
-				if (user->getName() == "" && user->getId() == 0)
+				user = std::make_unique<User*>(getObjectFromList(userId, &userList));
+				if ((*user)->getName() == "" && (*user)->getId() == 0)
 					break;
 				else {
 					std::cout << "These are your videogames: " << std::endl;
-					user->showUsersLibrary();
+					(*user)->showUsersLibrary();
 					break;
 				}
 			case 5:
 				std::cout << "Who are you?";
 				std::cin >> userId;
-				user = std::make_unique<User>(getObjectFromList(userId, &userList));
+				user = std::make_unique<User*>(getObjectFromList(userId, &userList));
 				std::cout << "Which videogame are you looking for?";
 				std::cin >> id;
-				if (user == std::unique_ptr<User>{})
+				if (user == std::unique_ptr<User*>{})
 					break;
 				else {
-					user->getVideogameFromList(id);
+					(*user)->getVideogameFromList(id);
 					break;
 				}
 			case 6:

@@ -1,6 +1,6 @@
 #include "../header.hpp"
 #include <iostream>
-
+//SHOULD CHECK VIDEOGAME LIST AS IT SEEMS THE PROBLEM IS THERE
 bool User::isDuplicateObject(std::string name, std::map<int, Videogame*>* list){
     for (auto it = list->begin(); it != list->end(); ++it) {
         if (it->second->getName() == name)
