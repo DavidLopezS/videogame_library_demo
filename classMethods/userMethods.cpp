@@ -1,6 +1,6 @@
 #include "../header.hpp"
 #include <iostream>
-//SHOULD CHECK VIDEOGAME LIST AS IT SEEMS THE PROBLEM IS THERE
+
 bool User::isDuplicateObject(std::string name, std::map<int, Videogame*>* list){
     for (auto it = list->begin(); it != list->end(); ++it) {
         if (it->second->getName() == name)
@@ -59,7 +59,7 @@ void User::getVideogameFromList(int id){
 
     auto videogame = userVideogames.find(id);
     if (videogame == userVideogames.end())
-        std::cout << "You cannot deleta a non existent object" << std::endl;
+        std::cout << "This videogame deosn't exist" << std::endl;
     else {
         std::cout << "This is your object" << std::endl;
         videogame->second->print();

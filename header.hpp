@@ -44,4 +44,3 @@ class User : public Entry{
         void showUsersLibrary();
         void getVideogameFromList(int id);
 };
-

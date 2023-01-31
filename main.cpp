@@ -50,19 +50,19 @@ void deleteObjectFromList(int id, std::map<int, T>* list) {
 }
 
 template <typename T=Entry>
-T* getObjectFromList(int id, std::map<int, T>* list) {
+std::optional<T> getObjectFromList(int id, std::map<int, T>* list) {
 	if (list->empty()) {
 		std::cout << "There are no objects in the list" << std::endl;
-		return nullptr;
+		return {};
 	}
 
 	auto object = list->find(id);
 	if (object == list->end()){
 		std::cout << "You cannot find a non existent object" << std::endl;
-		return nullptr;
+		return {};
 	} else {
 		std::cout << "This is your object" << std::endl;
-		return &object->second;
+		return object->second;
 	}
 }
 
@@ -212,7 +212,7 @@ int videogameManager(){
 			"9) Add achievements\n"
 			"10) Delete videogame from list\n"
 			"11) Back\n"
-			"12)Exit\n"
+			"12) Exit\n"
 			"Enter your choice:";
 		std::cin >> choice;
 		if (std::cin.fail()) {
@@ -233,11 +233,12 @@ int userManager(){
 	while (choice == -1) {
 		std::cout << "\n1) Add new user\n"
 			"2) Show user list\n"
-			"3) Buy videogame\n"
-			"4) List user videogames\n"
-			"5) Search user videogame\n"
-			"6) Back\n"
-			"7)Exit\n"
+			"3) Print available videogames\n"
+			"4) Buy videogame\n"
+			"5) List user videogames\n"
+			"6) Search user videogame\n"
+			"7) Back\n"
+			"8) Exit\n"
 			"Enter your choice:";
 		std::cin >> choice;
 		if (std::cin.fail()) {
@@ -245,7 +246,7 @@ int userManager(){
 			break;
 		}
 
-		if (!(1 <= choice && choice <= 7)) {
+		if (!(1 <= choice && choice <= 8)) {
 			std::cout << "\nInvalid choice. Try again!\n";
 			choice = -1;
 		}
@@ -254,15 +255,14 @@ int userManager(){
 }
 
 void run() {
-    std::unique_ptr<User*> user;
-	std::unique_ptr<Videogame*> videogame;
-	std::map<int, User> userList;
-	std::map<int, Videogame> videogameList;
+    std::unique_ptr<User> user;
+	std::unique_ptr<Videogame> videogame;
+	static std::map<int, User> userList;
+	static std::map<int, Videogame> videogameList;
 	int id;
 	int userId;
 	float tp;
     std::string name;
-	std::string sortType;
 
 	int choice = menu();
 
@@ -295,9 +295,13 @@ void run() {
 			case 3:
 				std::cout << "Which videogame are you looking for?";
 				std::cin >> id;
-				videogame = std::make_unique<Videogame*>(getObjectFromList(id, &videogameList));
-				(*videogame)->print();
-				break;
+				if(auto tempVid = getObjectFromList(id, &videogameList)){
+					videogame = std::make_unique<Videogame>(*tempVid);
+					videogame->print();
+					break;
+				}
+				else
+					break;
 			case 4:
 				getSortedVideogamesFromGenre(&videogameList);
 				break;
@@ -360,44 +364,52 @@ void run() {
 					break;
 				}
 			case 3:
-				std::cout << "Who are you?";
-				std::cin >> userId;
-				user = std::make_unique<User*>(getObjectFromList(userId, &userList));
-				if ((*user)->getName() == "" && (*user)->getId() == 0)
+				if(videogameList.empty()){
+					std::cout << "There are no objects in the list" << std::endl;
 					break;
-				else {
-					std::cout << "Which videogame do you want?";
-					std::cin >> id;
-					(*user)->addVideogame(id, &videogameList.find(id)->second);
+				} else {
+					std::cout << "Videogames in the list:" << std::endl;
+					for (auto it = videogameList.begin(); it != videogameList.end(); ++it)
+						it->second.print();
 					break;
 				}
+				break;
 			case 4:
 				std::cout << "Who are you?";
 				std::cin >> userId;
-				user = std::make_unique<User*>(getObjectFromList(userId, &userList));
-				if ((*user)->getName() == "" && (*user)->getId() == 0)
+				if(auto tempUser = getObjectFromList(userId, &userList)){
+					user = std::make_unique<User>(*tempUser);
+					std::cout << "Which videogame do you want?";
+					std::cin >> id;
+					user->addVideogame(id, &videogameList.find(id)->second);
 					break;
-				else {
-					std::cout << "These are your videogames: " << std::endl;
-					(*user)->showUsersLibrary();
+				} else 
 					break;
-				}
 			case 5:
 				std::cout << "Who are you?";
 				std::cin >> userId;
-				user = std::make_unique<User*>(getObjectFromList(userId, &userList));
-				std::cout << "Which videogame are you looking for?";
-				std::cin >> id;
-				if (user == std::unique_ptr<User*>{})
+				if (auto tempUser = getObjectFromList(userId, &userList)){
+					user = std::make_unique<User>(*tempUser);
+					std::cout << "These are your videogames: " << std::endl;
+					user->showUsersLibrary();
 					break;
-				else {
-					(*user)->getVideogameFromList(id);
+				} else 
 					break;
-				}
 			case 6:
+				std::cout << "Who are you?";
+				std::cin >> userId;
+				if(auto tempUser = getObjectFromList(userId, &userList)){
+					user = std::make_unique<User>(*tempUser);				
+					std::cout << "Which videogame are you looking for?";
+					std::cin >> id;
+					user->getVideogameFromList(id);
+					break;
+				} else 
+					break;
+			case 7:
 				run();
 				break;
-			case 7:
+			case 8:
 				std::cout << "See ya!" << std::endl;
 				return;
 			default:
